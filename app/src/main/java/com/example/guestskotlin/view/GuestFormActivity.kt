@@ -6,6 +6,7 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.guestskotlin.R
 import com.example.guestskotlin.R.layout
@@ -25,6 +26,9 @@ class GuestFormActivity : AppCompatActivity() {
         val radioAbsence = findViewById<RadioButton>(R.id.radio_absent)
 
         mViewModel = ViewModelProvider(this).get(GuestFormViewModel::class.java)
+        observe()
+
+
 
         saveButton.setOnClickListener {
 
@@ -35,22 +39,27 @@ class GuestFormActivity : AppCompatActivity() {
             }else if (radioPresence.isChecked && !radioAbsence.isChecked){
                 boolean = true
                 mViewModel.save(name,boolean)
-                Toast.makeText(this, "$name Checked present!",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "$name checked present!",Toast.LENGTH_SHORT).show()
                 finish()
             }else{
                 mViewModel.save(name,boolean)
-                Toast.makeText(this,"$name Checked absent!",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,"$name checked absent!",Toast.LENGTH_SHORT).show()
                 finish()
             }
-
-
-
         }
 
         cancelButton.setOnClickListener {
             finish()
         }
+    }
+    private fun observe(){
+        mViewModel.saveGuest.observe(this, Observer {
+            if (it){
+                Toast.makeText(this,"Success!",Toast.LENGTH_SHORT).show()
+            }else{
+                Toast.makeText(this,"Failure!",Toast.LENGTH_SHORT).show()
+            }
 
-
+        })
     }
 }
